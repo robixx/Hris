@@ -1,0 +1,6 @@
+@ITC.HRIS.WEB.API_HostAddress = http://localhost:5183
+
+GET {{ITC.HRIS.WEB.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
