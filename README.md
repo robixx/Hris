@@ -25,17 +25,7 @@ It provides employees and HR personnel with powerful features for leave manageme
 
 ---
 
-## 🛠️ Tech Stack
 
-| Technology         | Purpose                              |
-|--------------------|--------------------------------------|
-| **ASP.NET Core 8** | Backend API                          |
-| **SQL Server**     | Primary database                     |
-| **Entity Framework** | Data access & ORM                   |
-| **JWT Authentication** | Secure API access                 |
-| **Swagger**        | API documentation                    |
-
----
 
 ## 📂 Project Structure
 HRIS
@@ -60,3 +50,14 @@ HRIS
 | **Visual Studio 2022**    | Main development IDE                            |
 | **Postman**               | API testing tool                                |
 | **Docker**                | Containerization & deployment                   |
+
+
+
+
+
+
+🧑‍💻 Author
+Shoriful Islam Robi
+📧 robi@itcbd.com
+📍 Dhaka, Bangladesh
+🔗 [Portfolio](https://portfolio-me-rouge-ten.vercel.app/)
