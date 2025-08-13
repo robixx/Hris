@@ -56,8 +56,9 @@ HRIS
 
 
 
-🧑‍💻 Author
-Shoriful Islam Robi
-📧 robi@itcbd.com
-📍 Dhaka, Bangladesh
-🔗 [Portfolio](https://portfolio-me-rouge-ten.vercel.app/)
+## 🧑‍💻 Author
+
+**Shariful Islam Robi**  
+📧 Email: [robi@itcbd.com](mailto:robi@itcbd.com)  
+📍 Location: Dhaka, Bangladesh  
+🔗 Portfolio: [sharifulrobi.dev](https://your-portfolio-link.com)  
