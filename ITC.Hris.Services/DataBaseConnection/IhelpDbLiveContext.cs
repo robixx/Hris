@@ -25,7 +25,10 @@ namespace ITC.Hris.Infrastructure
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        { }
-
+        { 
+        
+        
         }
+
+    }
 }

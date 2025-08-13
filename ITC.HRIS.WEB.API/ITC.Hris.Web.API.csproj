@@ -15,4 +15,8 @@
     <ProjectReference Include="..\ITC.Hris.Services\ITC.Hris.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Middleware\" />
+  </ItemGroup>
+
 </Project>
