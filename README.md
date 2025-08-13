@@ -58,7 +58,7 @@ HRIS
 
 ## 🧑‍💻 Author
 
-**Shariful Islam Robi**  
+**Shoriful Islam Robi**  
 📧 Email: [robi@itcbd.com](mailto:robi@itcbd.com)  
 📍 Location: Dhaka, Bangladesh  
 🔗 Portfolio: [sharifulrobi.dev](https://your-portfolio-link.com)  
