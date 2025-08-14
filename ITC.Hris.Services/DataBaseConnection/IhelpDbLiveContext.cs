@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ITC.Hris.Application;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,16 +19,12 @@ namespace ITC.Hris.Infrastructure
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-
-        }
-
+        public DbSet<WebUserResponse> WebUserResponse { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        { 
-        
-        
+        {
+            modelBuilder.Entity<WebUserResponse>().HasNoKey();
+            base.OnModelCreating(modelBuilder);
         }
 
     }

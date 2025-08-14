@@ -7,11 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interface\" />
-    <Folder Include="ModelViewer\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ITC.HRIS.Entities\ITC.Hris.Domain.csproj" />
   </ItemGroup>
 
