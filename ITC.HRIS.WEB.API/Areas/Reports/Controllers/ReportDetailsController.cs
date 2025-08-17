@@ -13,7 +13,7 @@ namespace ITC.Hris.Web.API.Areas.Reports.Controllers
     {
 
 
-        [HttpGet("user-Profile")]
+        [HttpGet("Test-data")]
         public async Task<IActionResult> UserProfile()
         {
 
