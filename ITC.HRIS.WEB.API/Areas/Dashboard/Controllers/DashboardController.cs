@@ -80,5 +80,6 @@ namespace ITC.Hris.Web.API.Areas.Dashboard.Controllers
                 data = userProfle
             });
         }
+
     }
 }

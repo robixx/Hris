@@ -120,5 +120,21 @@ namespace ITC.Hris.Web.API.Areas.Security.Controllers
                 return Unauthorized(jsonData);
             }
         }
+
+        [HttpPost("logout")]
+        public IActionResult LogOut()
+        {
+            // Delete the authentication cookie
+            Response.Cookies.Delete("CookieAuth"); // Replace with your cookie name
+
+            // Optionally, delete other related cookies
+            // Response.Cookies.Delete("OtherCookieName");
+
+            return Ok(new
+            {
+                message = "Logged out successfully. Cookies cleared."
+            });
+        }
+
     }
 }
