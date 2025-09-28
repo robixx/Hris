@@ -14,6 +14,8 @@ namespace ITC.Hris.Infrastructure
             services.AddScoped<JwtConfig>();
             services.AddScoped<IAuth, AuthService>();
             services.AddScoped<IUserProfile, UserProfileService>();
+            services.AddScoped<ISettings, SettingService>();
+            services.AddScoped<IDropdown, DropdownService>();
 
         }
     }

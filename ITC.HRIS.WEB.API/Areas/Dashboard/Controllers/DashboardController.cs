@@ -12,10 +12,38 @@ namespace ITC.Hris.Web.API.Areas.Dashboard.Controllers
     public class DashboardController : ControllerBase
     {
         private readonly IUserProfile _userProfile;
-        public DashboardController(IUserProfile userProfile)
+        private readonly IDropdown _dropdown;
+        public DashboardController(IUserProfile userProfile, IDropdown dropdown )
         {
             _userProfile = userProfile;
+            _dropdown = dropdown;
         }
+
+        [HttpGet("get_employee_list")]
+        public async Task<IActionResult> GetEmployeeList()
+        {
+            var employeelist= await _dropdown.get_EmployeeList();
+            return Ok(new
+            {
+                code="200",
+                message= "Data Retrieved Successfull",
+                data=employeelist
+            });
+        }
+
+        [HttpGet("get_role_list")]
+        public async Task<IActionResult> GetRoleList()
+        {
+            var rolelist = await _dropdown.get_RoleList();
+            return Ok(new
+            {
+                code = "200",
+                message = "Data Retrieved Successfull",
+                data = rolelist
+            });
+        }
+
+
 
         [HttpGet("user-Profile")]
         public async Task<IActionResult> UserProfile()
