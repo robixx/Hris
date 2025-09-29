@@ -35,6 +35,8 @@ namespace ITC.Hris.Infrastructure
         public DbSet<AttendanceLogDto> AttendanceLogDto { get; set; }
         public DbSet<AppRole> AppRole { get; set; }
         public DbSet<app_RolePermission> app_RolePermission { get; set; }
+        public DbSet<app_MenuSetUp> app_MenuSetUp { get; set; }
+        public DbSet<app_RoleMenuPermission> app_RoleMenuPermission { get; set; }
 
 
         //Dto Model
@@ -53,7 +55,9 @@ namespace ITC.Hris.Infrastructure
             modelBuilder.Entity<app_hris_leave_application>().HasKey(c=>c.leaveApplicationId);
             modelBuilder.Entity<app_hris_Employee_Remarks_Da>().HasKey(c=>c.Id);
             modelBuilder.Entity<AppRole>().HasKey(c=>c.RoleId);
+            modelBuilder.Entity<app_MenuSetUp>().HasNoKey();
             modelBuilder.Entity<app_RolePermission>().HasKey(c=>c.Id);
+            modelBuilder.Entity<app_RoleMenuPermission>().HasKey(c=>c.Id);
 
 
 

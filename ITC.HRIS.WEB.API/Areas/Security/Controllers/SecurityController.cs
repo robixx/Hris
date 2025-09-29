@@ -124,11 +124,10 @@ namespace ITC.Hris.Web.API.Areas.Security.Controllers
         [HttpPost("logout")]
         public IActionResult LogOut()
         {
-            // Delete the authentication cookie
-            Response.Cookies.Delete("CookieAuth"); // Replace with your cookie name
+           
+            Response.Cookies.Delete("CookieAuth"); 
 
-            // Optionally, delete other related cookies
-            // Response.Cookies.Delete("OtherCookieName");
+            
 
             return Ok(new
             {
