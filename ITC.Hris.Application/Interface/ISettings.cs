@@ -13,5 +13,8 @@ namespace ITC.Hris.Application.Interface
         Task<(string Message, bool Status)> InsertRole(appRoleDto model);
         Task<(List<RolePermissionDto>result, bool Status)> RolePermission(long EmployeeId);
         Task<(string Message, bool Status)> SaveRolePermissionAsync(InsertUserRoleDto model);
+        Task<(List<RoleBaseMainMenuDto> list,string Message, bool Status)> GetRoleMenuPerAsync(int RoleId);
+        Task<(string Message, bool Status)> SaveRoleWiseMenuPermissionAsync(InsertRoleWiseMenuDto model, int loginuser);
+
     }
 }

@@ -16,6 +16,7 @@ namespace ITC.Hris.Infrastructure
             services.AddScoped<IUserProfile, UserProfileService>();
             services.AddScoped<ISettings, SettingService>();
             services.AddScoped<IDropdown, DropdownService>();
+            services.AddScoped<ILeaveManage, LeaveService>();
 
         }
     }

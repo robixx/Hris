@@ -37,12 +37,15 @@ namespace ITC.Hris.Infrastructure
         public DbSet<app_RolePermission> app_RolePermission { get; set; }
         public DbSet<app_MenuSetUp> app_MenuSetUp { get; set; }
         public DbSet<app_RoleMenuPermission> app_RoleMenuPermission { get; set; }
+        public DbSet<app_hris_shift_info> app_hris_shift_info { get; set; }
 
 
         //Dto Model
         public DbSet<appRoleDto> appRoleDto { get; set; }
         public DbSet<AppRolePermissionDto> AppRolePermissionDto { get; set; }
         public DbSet<RolePermissionDto> RolePermissionDto { get; set; }
+        public DbSet<V2_RoleMenuPermissionDto> V2_RoleMenuPermissionDto { get; set; }
+        public DbSet<usp_get_hris_leave_application_ResultDto> usp_get_hris_leave_application_ResultDto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,12 +61,9 @@ namespace ITC.Hris.Infrastructure
             modelBuilder.Entity<app_MenuSetUp>().HasNoKey();
             modelBuilder.Entity<app_RolePermission>().HasKey(c=>c.Id);
             modelBuilder.Entity<app_RoleMenuPermission>().HasKey(c=>c.Id);
-
-
+            modelBuilder.Entity<app_hris_shift_info>().HasKey(c=>c.shiftInfoId);
 
             // Dto Model
-
-
             modelBuilder.Entity<WebUserResponse>().HasNoKey();
             modelBuilder.Entity<vw_employee_details>().HasNoKey();
             modelBuilder.Entity<DashBord_Individual_Attendance>().HasNoKey();
@@ -71,6 +71,8 @@ namespace ITC.Hris.Infrastructure
             modelBuilder.Entity<appRoleDto>().HasNoKey();
             modelBuilder.Entity<AppRolePermissionDto>().HasNoKey();
             modelBuilder.Entity<RolePermissionDto>().HasNoKey();
+            modelBuilder.Entity<V2_RoleMenuPermissionDto>().HasNoKey();
+            modelBuilder.Entity<usp_get_hris_leave_application_ResultDto>().HasNoKey();
             base.OnModelCreating(modelBuilder);
         }
 
