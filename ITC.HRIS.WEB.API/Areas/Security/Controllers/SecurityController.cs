@@ -1,4 +1,5 @@
 ﻿using ITC.Hris.Application;
+using ITC.Hris.Application.Interface;
 using ITC.Hris.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -8,22 +9,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ITC.Hris.Web.API.Areas.Security.Controllers
 {
-    [Area("Security")]
-    [Route("api/Security/[controller]")]
+    [Area("Accounts")]
+    [Route("api/[Area]/[controller]")]
     [ApiController]
-    [EnableCors("AllowAll")]
+    [EnableCors("AllowFrontend")]
     public class SecurityController : ControllerBase
     {
         private readonly IAuth _auth;
         private readonly JwtConfig _jwtConfig;
-        public SecurityController(IAuth auth, JwtConfig jwtConfig)
+        private readonly IUserProfile _userProfile;
+        public SecurityController(IAuth auth, JwtConfig jwtConfig, IUserProfile userProfile)
         {
             _auth = auth;
             _jwtConfig = jwtConfig;
+            _userProfile = userProfile;
         }
 
         [HttpPost("auth-user")]
-        [AllowAnonymous]
+        [EnableCors("AllowFrontend")]
         public async Task<IActionResult> UserLogInRequest([FromBody] AuthenticationRequest Auth)
         {
             if (Auth == null)
@@ -83,16 +86,19 @@ namespace ITC.Hris.Web.API.Areas.Security.Controllers
                     DispalyName=response.DispalyName,
                     RoleId= response.RoleId,
                     RoleName= response.RoleName,
-                    TokenExpired = DateTime.Now.AddMinutes(5)
+                    TokenExpired = DateTime.Now.AddMinutes(30)
                 };
+
 
                 if (jwt != null)
                 {
                     string strToken = _jwtConfig.Generate(jwt);
+                    var userProfle = await _userProfile.getloginUser(Convert.ToInt64(response.EmployeeId));
                     var jsonData = new
                     {
                         code = "200",
                         message = "Login Successfull",
+                        data= userProfle,
                         token = strToken
                     };
                    

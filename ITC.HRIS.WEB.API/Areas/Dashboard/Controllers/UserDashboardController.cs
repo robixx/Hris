@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace ITC.Hris.Web.API.Areas.Dashboard.Controllers
 {
     [Area("Dashboard")]
-    [Route("api/Dashboard/[controller]")]
+    [Route("api/[Area]/[controller]")]
     [ApiController]
     [Authorize]
-    public class DashboardController : ControllerBase
+    public class UserDashboardController : ControllerBase
     {
         private readonly IUserProfile _userProfile;
         private readonly IDropdown _dropdown;
-        public DashboardController(IUserProfile userProfile, IDropdown dropdown )
+        public UserDashboardController(IUserProfile userProfile, IDropdown dropdown )
         {
             _userProfile = userProfile;
             _dropdown = dropdown;

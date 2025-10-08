@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace ITC.Hris.Web.API.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("api/Admin/[controller]")]
+    [Route("api/[Area]/[controller]")]
     [ApiController]
     [Authorize]
-    public class AdminController : Controller
+    public class HRController : Controller
     {
         private readonly ISettings _settings;
 
-        public AdminController(ISettings settings)
+        public HRController(ISettings settings)
         {
             _settings = settings;
         }

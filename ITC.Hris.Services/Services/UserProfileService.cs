@@ -311,5 +311,39 @@ namespace ITC.Hris.Infrastructure.Services
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<LoginUserDto> getloginUser(long EmployeeId)
+        {
+            try
+            {
+                LoginUserDto userlist = new LoginUserDto();
+
+                var parameter = new SqlParameter("@EmployeeId", SqlDbType.BigInt) { Value = EmployeeId };
+
+                var result = await _context.vw_employee_details
+                    .Where(i => i.statusId == 17 && i.employeeId == EmployeeId)
+                    .Select(i => new LoginUserDto
+                    {
+                        employeeId=i.employeeId,
+                       fullname= i.profileName,
+                        department=i.department,
+                       designation=i.designation
+                        // add other fields you want
+                    })
+                    .FirstOrDefaultAsync();
+
+
+                if (result != null)
+                {
+                    userlist = result;
+                }
+                return userlist;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

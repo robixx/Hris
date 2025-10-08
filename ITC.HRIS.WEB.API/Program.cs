@@ -35,11 +35,12 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:3000","http://192.168.11.153")
               .AllowAnyHeader()
               .AllowAnyMethod()
+              .AllowCredentials()
               .WithExposedHeaders("Content-Disposition");
     });
 });
@@ -102,7 +103,7 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "HRIS API V1");
     c.RoutePrefix = "swagger"; // Access at https://<host>/swagger
 });
-app.UseCors("AllowAll");
+app.UseCors("AllowFrontend");
 //app.UseMiddleware<AcceptJsonMiddleware>();
 app.UseAuthentication();
 app.UseMiddleware<JwtValidationMiddleware>();

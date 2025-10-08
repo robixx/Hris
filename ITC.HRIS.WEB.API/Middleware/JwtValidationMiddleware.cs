@@ -12,7 +12,7 @@ namespace ITC.Hris.Web.API.Middleware
         private readonly string _expectedAudience;
         private static readonly string[] _excludedPaths = new[]
         {
-            "/", "/api/security/security/auth-user"
+            "/", "/api/accounts/security/auth-user"
         };
         public JwtValidationMiddleware(RequestDelegate next, IConfiguration config)
         {

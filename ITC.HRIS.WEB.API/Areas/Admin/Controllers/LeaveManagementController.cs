@@ -7,7 +7,7 @@ using System.Linq;
 namespace ITC.Hris.Web.API.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Route("api/Admin/[controller]")]
+    [Route("api/[Area]/[controller]")]
     [ApiController]
     [Authorize]
     public class LeaveManagementController : ControllerBase

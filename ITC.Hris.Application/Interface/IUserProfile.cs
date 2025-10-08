@@ -11,6 +11,7 @@ namespace ITC.Hris.Application.Interface
     public interface IUserProfile
     {
         Task<vw_employee_details> getuserProfile(long EmployeeId);
+        Task<LoginUserDto> getloginUser(long EmployeeId);
         Task<List<AttendanceLogDto>> getIndividualAttendance(string startdate, string enddate, long EmployeeId);
     }
 }
