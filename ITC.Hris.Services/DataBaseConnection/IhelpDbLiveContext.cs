@@ -38,6 +38,12 @@ namespace ITC.Hris.Infrastructure
         public DbSet<app_MenuSetUp> app_MenuSetUp { get; set; }
         public DbSet<app_RoleMenuPermission> app_RoleMenuPermission { get; set; }
         public DbSet<app_hris_shift_info> app_hris_shift_info { get; set; }
+        public DbSet<app_hris_leave_calender> app_hris_leave_calender { get; set; }
+        
+        public DbSet<app_hris_leave_application_details> app_hris_leave_application_details { get; set; }
+
+        // Procedure 
+        public DbSet<usp_get_hris_leave_rule_Result> usp_get_hris_leave_rule_Result { get; set; }
 
 
         //Dto Model
@@ -46,6 +52,7 @@ namespace ITC.Hris.Infrastructure
         public DbSet<RolePermissionDto> RolePermissionDto { get; set; }
         public DbSet<V2_RoleMenuPermissionDto> V2_RoleMenuPermissionDto { get; set; }
         public DbSet<usp_get_hris_leave_application_ResultDto> usp_get_hris_leave_application_ResultDto { get; set; }
+        public DbSet<app_hris_leave_applicationDto> app_hris_leave_applicationDto { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -54,14 +61,19 @@ namespace ITC.Hris.Infrastructure
             modelBuilder.Entity<app_hris_alternate_login>().HasKey(c=>c.alternateLoginId);
             modelBuilder.Entity<meta_data_properties>().HasKey(c=>c.dataPropertyId);
             modelBuilder.Entity<app_hris_holidays>().HasKey(c=>c.holidayId);
-            modelBuilder.Entity<app_hris_roaster_duty>().HasKey(c=>c.roasterId);
-            modelBuilder.Entity<app_hris_leave_application>().HasKey(c=>c.leaveApplicationId);
+            modelBuilder.Entity<app_hris_roaster_duty>().HasKey(c=>c.roasterId);           
             modelBuilder.Entity<app_hris_Employee_Remarks_Da>().HasKey(c=>c.Id);
             modelBuilder.Entity<AppRole>().HasKey(c=>c.RoleId);
             modelBuilder.Entity<app_MenuSetUp>().HasNoKey();
             modelBuilder.Entity<app_RolePermission>().HasKey(c=>c.Id);
             modelBuilder.Entity<app_RoleMenuPermission>().HasKey(c=>c.Id);
             modelBuilder.Entity<app_hris_shift_info>().HasKey(c=>c.shiftInfoId);
+            modelBuilder.Entity<app_hris_leave_calender>().HasKey(c=>c.calenderId);
+            modelBuilder.Entity<app_hris_leave_application>().HasKey(c=>c.leaveApplicationId);
+            modelBuilder.Entity<app_hris_leave_application_details>().HasKey(c=>c.leaveApplicationIdDetailsId);
+
+            //Prodecure Model
+            modelBuilder.Entity<usp_get_hris_leave_rule_Result>().HasNoKey();
 
             // Dto Model
             modelBuilder.Entity<WebUserResponse>().HasNoKey();
@@ -73,6 +85,7 @@ namespace ITC.Hris.Infrastructure
             modelBuilder.Entity<RolePermissionDto>().HasNoKey();
             modelBuilder.Entity<V2_RoleMenuPermissionDto>().HasNoKey();
             modelBuilder.Entity<usp_get_hris_leave_application_ResultDto>().HasNoKey();
+            modelBuilder.Entity<app_hris_leave_applicationDto>().HasNoKey();
             base.OnModelCreating(modelBuilder);
         }
 

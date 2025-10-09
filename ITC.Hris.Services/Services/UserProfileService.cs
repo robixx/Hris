@@ -316,9 +316,13 @@ namespace ITC.Hris.Infrastructure.Services
         {
             try
             {
-                LoginUserDto userlist = new LoginUserDto();
+                LoginUserDto userlist = new LoginUserDto();               
 
-                var parameter = new SqlParameter("@EmployeeId", SqlDbType.BigInt) { Value = EmployeeId };
+                var roleid= await _context.app_RolePermission                    
+                    .Where(i=>i.EmployeeId== EmployeeId)
+                    .Select(i=>i.RoleId)
+                    .FirstOrDefaultAsync();
+
 
                 var result = await _context.vw_employee_details
                     .Where(i => i.statusId == 17 && i.employeeId == EmployeeId)
@@ -327,7 +331,9 @@ namespace ITC.Hris.Infrastructure.Services
                         employeeId=i.employeeId,
                        fullname= i.profileName,
                         department=i.department,
-                       designation=i.designation
+                       designation=i.designation,
+                       roleId=roleid
+                       
                         // add other fields you want
                     })
                     .FirstOrDefaultAsync();
