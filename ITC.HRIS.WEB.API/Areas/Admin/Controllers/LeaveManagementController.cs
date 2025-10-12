@@ -96,19 +96,24 @@ namespace ITC.Hris.Web.API.Areas.Admin.Controllers
 
 
         [HttpPost("create-leave-application")]
-        public async Task<IActionResult> CreateLeaveApplication([FromForm] app_hris_leave_applicationDto leave_application, IFormFile? file)
+        public async Task<IActionResult> CreateLeaveApplication([FromForm] LeaveCreateDto leave_application)
         {
-            
+            var userIdClaim = HttpContext.User.FindFirst("EmployeeId")?.Value;
 
-            var typelist = await _leavemanage.getLeaveType();
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int loginUser))
+            {
+                return Unauthorized(new { message = "Invalid or missing token." });
+            }
 
-            var calenderlist = await _leavemanage.getCalendarY();
+            long loginuser = Convert.ToInt64(userIdClaim);
+            leave_application.leave_Apply.employeeId = loginuser;
+
+            var typelist = await _leavemanage.saveLeaveApplication(leave_application, loginuser);
+           
             return Ok(new
             {
                 code = typelist.Status ? "200" : "500",
-                message = typelist.Message,
-                calender = calenderlist.year,
-                leavetype = typelist.leavetypeList,
+                message = typelist.Message,               
               
             });
         }

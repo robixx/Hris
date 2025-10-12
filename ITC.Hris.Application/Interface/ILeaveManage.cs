@@ -14,5 +14,6 @@ namespace ITC.Hris.Application.Interface
         Task<(CalendarYearDto year, string Message, bool Status)> getCalendarY();
         Task<(List<usp_get_hris_leave_rule_Result> leavetypeList, string Message, bool Status)> getLeaveType();
         Task<(List<Dropdowns> employeelist, bool Status)> getLeaveResponsibleEmployee(long EmployeeId);
+        Task<(string Message, bool Status)> saveLeaveApplication(LeaveCreateDto leave_application, long EmployeeId);
     }
 }

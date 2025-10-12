@@ -41,6 +41,13 @@ namespace ITC.Hris.Infrastructure
         public DbSet<app_hris_leave_calender> app_hris_leave_calender { get; set; }
         
         public DbSet<app_hris_leave_application_details> app_hris_leave_application_details { get; set; }
+        public DbSet<app_hris_leave_rule> app_hris_leave_rule { get; set; }
+        public DbSet<app_hris_leave_approver_by_unit_emp> app_hris_leave_approver_by_unit_emp { get; set; }
+        public DbSet<app_hris_employee> app_hris_employee { get; set; }
+        public DbSet<sec_users> sec_users { get; set; }
+        public DbSet<sec_user_profile> sec_user_profile { get; set; }
+        public DbSet<app_hris_leave_approver_by_unit_emp_Dtl> app_hris_leave_approver_by_unit_emp_Dtl { get; set; }
+        public DbSet<app_hris_leave_special_empid_for_leave> app_hris_leave_special_empid_for_leave { get; set; }
 
         // Procedure 
         public DbSet<usp_get_hris_leave_rule_Result> usp_get_hris_leave_rule_Result { get; set; }
@@ -71,6 +78,13 @@ namespace ITC.Hris.Infrastructure
             modelBuilder.Entity<app_hris_leave_calender>().HasKey(c=>c.calenderId);
             modelBuilder.Entity<app_hris_leave_application>().HasKey(c=>c.leaveApplicationId);
             modelBuilder.Entity<app_hris_leave_application_details>().HasKey(c=>c.leaveApplicationIdDetailsId);
+            modelBuilder.Entity<app_hris_leave_rule>().HasKey(c=>c.leaveRuleId);
+            modelBuilder.Entity<app_hris_leave_approver_by_unit_emp>().HasKey(c=>c.Id);
+            modelBuilder.Entity<app_hris_employee>().HasKey(c=>c.employeeId);
+            modelBuilder.Entity<sec_users>().HasKey(c=>c.userId);
+            modelBuilder.Entity<sec_user_profile>().HasKey(c=>c.profileId);
+            modelBuilder.Entity<app_hris_leave_approver_by_unit_emp_Dtl>().HasKey(c=>c.Id);
+            modelBuilder.Entity<app_hris_leave_special_empid_for_leave>().HasKey(c=>c.Id);
 
             //Prodecure Model
             modelBuilder.Entity<usp_get_hris_leave_rule_Result>().HasNoKey();

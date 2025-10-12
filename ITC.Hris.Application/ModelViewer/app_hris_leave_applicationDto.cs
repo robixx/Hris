@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,8 @@ namespace ITC.Hris.Application.ModelViewer
         public int staus { get; set; }
         public long leaveResponsiblePerson { get; set; }
         public int hrApproved { get; set; }
-        public DateTime dayOffDate { get; set; }
+        public int leaveDays { get; set; }
+        public DateTime? dayOffDate { get; set; }
+       
     }
 }

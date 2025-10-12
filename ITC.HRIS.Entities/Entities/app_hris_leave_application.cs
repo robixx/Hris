@@ -24,6 +24,7 @@ namespace ITC.Hris.Domain.Entities
         public long? leaveApprovalCode { get; set; }
         public int? insertBy { get; set; }
         public DateTime insertDate { get; set; }
+        public int leaveDays { get; set; }
         public long leaveStatus { get; set; }
         public int staus { get; set; }
         public long leaveResponsiblePerson { get; set; }
