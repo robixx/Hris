@@ -170,6 +170,7 @@ namespace ITC.Hris.Infrastructure.Services
                             {
                                 MenuId = item2.MenuId,
                                 MenuName = item2.MenuName,
+                                Urls=item2.Urls,
                                 ParentId = item2.ParentId,
                                 IsAllow = item2.IsAllow,
                                 ViewOrder = item2.ViewOrder,
@@ -182,6 +183,7 @@ namespace ITC.Hris.Infrastructure.Services
                             MenuId = item.MenuId,
                             MenuName = item.MenuName,
                             ParentId = item.ParentId,
+                            Urls = item.Urls,
                             IsAllow = item.IsAllow,
                             ViewOrder = item.ViewOrder,
                             roelbasesubMenu = submenu

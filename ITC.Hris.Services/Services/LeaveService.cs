@@ -210,7 +210,7 @@ namespace ITC.Hris.Infrastructure.Services
                     int leaveTaken = (int)leaveDaysCountPrm.Value;
                     leave_application.leaveDays = leaveTaken;
                     //for checking is leave taken between the time interval start here
-                    int leavetakenCountInDateRange = await usp_get_leave_taken_info_leave_application(-1, EmployeeId, leave_application.leaveFromDate, leave_application.leaveToDate);
+                    int leavetakenCountInDateRange = await usp_get_leave_taken_info_leave_application(-1, leave_application.employeeId, leave_application.leaveFromDate, leave_application.leaveToDate);
 
                     if (leavetakenCountInDateRange == -1)
                     {
@@ -225,7 +225,7 @@ namespace ITC.Hris.Infrastructure.Services
 
                     }
                     //for checking is leave taken between the time interval start here
-                    int leavetakenCountInDateRangeMaster = await usp_get_leave_taken_info(-1, EmployeeId, leave_application.leaveFromDate, leave_application.leaveToDate);
+                    int leavetakenCountInDateRangeMaster = await usp_get_leave_taken_info(-1, leave_application.employeeId, leave_application.leaveFromDate, leave_application.leaveToDate);
                     if (leavetakenCountInDateRangeMaster == -1)
                     {
 
@@ -262,9 +262,8 @@ namespace ITC.Hris.Infrastructure.Services
                         return ("Calendar year info not found.", false);
 
                     }
-                    //for checking calander year end here
-                    //for checking leave balance start here
-                    int leave_balance = await GetLeaveBalance(EmployeeId, leave_application.leaveRuleId);
+                    
+                    int leave_balance = await GetLeaveBalance(leave_application.employeeId, leave_application.leaveRuleId);
                     leave_balance = leave_balance - leaveTaken;
                     if (leave_balance < 0)
                     {
@@ -343,7 +342,7 @@ namespace ITC.Hris.Infrastructure.Services
                         new SqlParameter("@CalenderYear", int.Parse(DateTime.Now.ToString("yyyy"))),
                         new SqlParameter("@LeaveAllocated", leaveDays),
                         new SqlParameter("@LeaveTaken", leaveTaken),
-                        new SqlParameter("@dayOffDate", (object)leave_application.dayOffDate ?? DBNull.Value),
+                        new SqlParameter("@dayOffDate", leave_application.dayOffDate),
                         LeaveApplicationIdParam
                     );
 
@@ -490,16 +489,14 @@ namespace ITC.Hris.Infrastructure.Services
                                               new SqlParameter("@LeaveStatus", 55),
                                               new SqlParameter("@Body", body),
                                               new SqlParameter("@Subject", sub)
-                                             );
-
-
-
-
+                                );
 
                             //MailNotification(responsiblePerson.email, "Leave responsible person has been added", body);
                         }
                     }
-                    app_hris_leave_special_empid_for_leave? specialEmployeeForLeave =await _ihelpdb.app_hris_leave_special_empid_for_leave.Where(a => a.employeeId == leave_application.employeeId).FirstOrDefaultAsync();
+                    app_hris_leave_special_empid_for_leave? specialEmployeeForLeave =await _ihelpdb.app_hris_leave_special_empid_for_leave
+                                                                                    .Where(a => a.employeeId == leave_application.employeeId)
+                                                                                    .FirstOrDefaultAsync();
                     if (specialEmployeeForLeave != null)
                     {
                         // hardcoded hr approver 2 for now
@@ -534,27 +531,39 @@ namespace ITC.Hris.Infrastructure.Services
                     }
                     else
                     {
-                        //app_hris_leave_approver_by_unit_emp_Dtl employeePreApprovalInfo = db.app_hris_leave_approver_by_unit_emp_Dtl.Where(a => a.unitId == (db.app_hris_employee.Where(u => u.employeeId == leave_application.employeeId).FirstOrDefault().unitId)).FirstOrDefault();
-                        app_hris_leave_approver_by_unit_emp_Dtl? employeePreApprovalInfo = await _ihelpdb.app_hris_leave_approver_by_unit_emp_Dtl.Where(a => a.unitId == leave_application.employeeId).FirstOrDefaultAsync();
-                        app_hris_leave_approver_by_unit_emp? employeeLeaveApproverInfoFinal = await _ihelpdb.app_hris_leave_approver_by_unit_emp.Where(a => a.employeeId == leave_application.employeeId).FirstOrDefaultAsync();
+                       
+                        app_hris_leave_approver_by_unit_emp_Dtl? employeePreApprovalInfo = await _ihelpdb.app_hris_leave_approver_by_unit_emp_Dtl
+                            .Where(a => a.unitId == leave_application.employeeId)
+                            .FirstOrDefaultAsync();
+                        app_hris_leave_approver_by_unit_emp? employeeLeaveApproverInfoFinal = await _ihelpdb.app_hris_leave_approver_by_unit_emp
+                            .Where(a => a.employeeId == leave_application.employeeId)
+                            .FirstOrDefaultAsync();
                         if (employeePreApprovalInfo != null && employeeLeaveApproverInfoFinal == null)
                         {
                             sec_users? userInfoAlternateFirstApproverId = null;
-                            sec_users userInfoFirstApprover = await _ihelpdb.sec_users.Where(s => s.employeeId == employeePreApprovalInfo.firstApproverId).FirstOrDefaultAsync();
+                            sec_users? userInfoFirstApprover = await _ihelpdb.sec_users
+                                .Where(s => s.employeeId == employeePreApprovalInfo.firstApproverId)
+                                .FirstOrDefaultAsync();
                             if (employeePreApprovalInfo.firstApproverId != employeePreApprovalInfo.firstApproverAltId)
                             {
-                                userInfoAlternateFirstApproverId = await _ihelpdb.sec_users.Where(s => s.employeeId == employeePreApprovalInfo.firstApproverAltId).FirstOrDefaultAsync();
+                                userInfoAlternateFirstApproverId = await _ihelpdb.sec_users
+                                    .Where(s => s.employeeId == employeePreApprovalInfo.firstApproverAltId)
+                                    .FirstOrDefaultAsync();
 
                             }
                             sec_user_profile? userProfileFirstApprover = null;
                             sec_user_profile? userProfileAlternateFirstApprover = null;
                             if (userInfoFirstApprover != null)
                             {
-                                userProfileFirstApprover = await _ihelpdb.sec_user_profile.Where(i => i.profileId == userInfoFirstApprover.profileId).FirstOrDefaultAsync();
+                                userProfileFirstApprover = await _ihelpdb.sec_user_profile
+                                    .Where(i => i.profileId == userInfoFirstApprover.profileId)
+                                    .FirstOrDefaultAsync();
                             }
                             if (userInfoAlternateFirstApproverId != null)
                             {
-                                userProfileAlternateFirstApprover = await _ihelpdb.sec_user_profile.Where(i => i.profileId == userInfoAlternateFirstApproverId.profileId).FirstOrDefaultAsync();
+                                userProfileAlternateFirstApprover = await _ihelpdb.sec_user_profile
+                                    .Where(i => i.profileId == userInfoAlternateFirstApproverId.profileId)
+                                    .FirstOrDefaultAsync();
                             }
                             //string displayName = db.sec_user_profile.Where(s => s.profileId == (db.sec_users.Where(u => u.employeeId == leave_application.employeeId).FirstOrDefault().profileId)).FirstOrDefault().displayName;
                             string body = $"Dear Sir/Madam,<br/><br/>My {LeaveType} leave application has been submitted {dateRange}. Please pre-recommend this. Please Click <a href='{apiUrl}'>  Here</a>   <br/><br/>Regards<br/>{displayName}<br/>";
@@ -603,7 +612,9 @@ namespace ITC.Hris.Infrastructure.Services
                         else
                         {
                             app_hris_leave_approver_by_unit_emp? employeeLeaveApproverInfo = null, employeeLeaveApproverFinal = null;
-                            employeeLeaveApproverInfo = await _ihelpdb.app_hris_leave_approver_by_unit_emp.Where(a => a.employeeId == leave_application.employeeId).FirstOrDefaultAsync();
+                            employeeLeaveApproverInfo = await _ihelpdb.app_hris_leave_approver_by_unit_emp
+                                .Where(a => a.employeeId == leave_application.employeeId)
+                                .FirstOrDefaultAsync();
                             employeeLeaveApproverFinal = employeeLeaveApproverInfo;
                             if (employeeLeaveApproverInfo == null)
                             {
@@ -695,7 +706,9 @@ namespace ITC.Hris.Infrastructure.Services
                                 }
                                 if (employeeLeaveApproverInfo?.firstApproverId == null && employeeLeaveApproverInfo?.secondApproverId == null)
                                 {
-                                    sec_users? userInfoFinalApprover =await _ihelpdb.sec_users.Where(s => s.employeeId == employeeLeaveApproverFinal.finalApproverId).FirstOrDefaultAsync();
+                                    sec_users? userInfoFinalApprover = await _ihelpdb.sec_users
+                                        .Where(s => s.employeeId == employeeLeaveApproverFinal.finalApproverId)
+                                        .FirstOrDefaultAsync();
                                     if (userInfoFinalApprover != null)
                                     {
                                         sec_user_profile? userProfileFinalApprover = await _ihelpdb.sec_user_profile.Where(i => i.profileId == userInfoFinalApprover.profileId).FirstOrDefaultAsync();
@@ -715,7 +728,7 @@ namespace ITC.Hris.Infrastructure.Services
                                                           new SqlParameter("@LeaveStatus", 55),
                                                           new SqlParameter("@Body", body),
                                                           new SqlParameter("@Subject", sub)
-                                                         );
+                                            );
                                         }
                                     }
                                 }
@@ -724,14 +737,9 @@ namespace ITC.Hris.Infrastructure.Services
                         }
                     }
 
-
-
-
                     await transaction.CommitAsync();
 
                     #endregion
-
-
 
                 }
 
@@ -791,9 +799,9 @@ namespace ITC.Hris.Infrastructure.Services
                            new SqlParameter("@LeaveToDate", leaveToDate ?? (object)DBNull.Value)
                        )
                        .AsNoTracking()
-                       .FirstOrDefaultAsync();
+                       .ToListAsync(); // <-- Materialize results first
 
-            return result?.LeaveDaysCount ?? 0;
+            return result.FirstOrDefault()?.LeaveDaysCount ?? 0;
 
         }
 
@@ -809,9 +817,9 @@ namespace ITC.Hris.Infrastructure.Services
                            new SqlParameter("@LeaveToDate", leaveToDate ?? (object)DBNull.Value)
                        )
                        .AsNoTracking()
-                       .FirstOrDefaultAsync();
+                       .ToListAsync();
 
-            return result?.LeaveDaysCount ?? 0;
+            return result.FirstOrDefault()?.LeaveDaysCount ?? 0;
         }
 
 

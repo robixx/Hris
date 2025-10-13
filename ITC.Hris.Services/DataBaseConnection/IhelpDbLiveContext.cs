@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static ITC.Hris.Infrastructure.Services.LeaveService;
 
 namespace ITC.Hris.Infrastructure
 {
@@ -60,6 +61,7 @@ namespace ITC.Hris.Infrastructure
         public DbSet<V2_RoleMenuPermissionDto> V2_RoleMenuPermissionDto { get; set; }
         public DbSet<usp_get_hris_leave_application_ResultDto> usp_get_hris_leave_application_ResultDto { get; set; }
         public DbSet<app_hris_leave_applicationDto> app_hris_leave_applicationDto { get; set; }
+        public DbSet<LeaveTakenResult> LeaveTakenResult { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -100,6 +102,7 @@ namespace ITC.Hris.Infrastructure
             modelBuilder.Entity<V2_RoleMenuPermissionDto>().HasNoKey();
             modelBuilder.Entity<usp_get_hris_leave_application_ResultDto>().HasNoKey();
             modelBuilder.Entity<app_hris_leave_applicationDto>().HasNoKey();
+            modelBuilder.Entity<LeaveTakenResult>().HasNoKey();
             base.OnModelCreating(modelBuilder);
         }
 

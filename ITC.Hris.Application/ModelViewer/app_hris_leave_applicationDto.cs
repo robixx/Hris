@@ -28,7 +28,7 @@ namespace ITC.Hris.Application.ModelViewer
         public long leaveResponsiblePerson { get; set; }
         public int hrApproved { get; set; }
         public int leaveDays { get; set; }
-        public DateTime? dayOffDate { get; set; }
+        public DateTime? dayOffDate { get; set; } = null;
        
     }
 }

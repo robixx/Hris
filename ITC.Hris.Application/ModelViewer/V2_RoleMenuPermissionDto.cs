@@ -10,6 +10,7 @@ namespace ITC.Hris.Application.ModelViewer
     {
         public int MenuId { get; set; }
         public string MenuName { get; set; }
+        public string Urls { get; set; }
         public int ParentId { get; set; }
         public int ViewOrder { get; set; }
         public int IsAllow { get; set; }   // 0 or 1

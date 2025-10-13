@@ -11,12 +11,12 @@ namespace ITC.Hris.Domain.Entities
     {
         [Key]
         public long Id { get; set; }
-        public long unitId { get; set; }
-        public long employeeId { get; set; }
-        public long firstApproverId { get; set; }
-        public long secondApproverId { get; set; }
-        public long finalApproverId { get; set; }
-        public long insertBy { get; set; }
-        public DateTime insertDate { get; set; }
+        public long? unitId { get; set; }
+        public long? employeeId { get; set; }
+        public long? firstApproverId { get; set; }
+        public long? secondApproverId { get; set; }
+        public long? finalApproverId { get; set; }
+        public long? insertBy { get; set; }
+        public DateTime? insertDate { get; set; }
     }
 }
