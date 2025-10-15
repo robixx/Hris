@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using System.Linq;
 
 namespace ITC.Hris.Web.API.Areas.Admin.Controllers
@@ -96,7 +97,7 @@ namespace ITC.Hris.Web.API.Areas.Admin.Controllers
 
 
         [HttpPost("create-leave-application")]
-        public async Task<IActionResult> CreateLeaveApplication([FromForm] LeaveCreateDto leave_application)
+        public async Task<IActionResult> CreateLeaveApplication([FromBody] leave_applicationDto leave_application)
         {
             var userIdClaim = HttpContext.User.FindFirst("EmployeeId")?.Value;
 
@@ -106,17 +107,55 @@ namespace ITC.Hris.Web.API.Areas.Admin.Controllers
             }
 
             long loginuser = Convert.ToInt64(userIdClaim);
-            leave_application.leave_Apply.employeeId = loginuser;
 
-            var typelist = await _leavemanage.saveLeaveApplication(leave_application, loginuser);
+            if (leave_application == null)
+            {
+                return BadRequest(new
+                {
+                    code = 301,
+                    message = "Invalid Data",
+                });
+            }
+
+            var datasave = new app_hris_leave_applicationDto
+            {
+                employeeId = loginuser,
+                leaveRuleId = leave_application.leaveRuleId,
+                leaveFromDate = leave_application.leaveFromDate,
+                leaveToDate = leave_application.leaveToDate,
+                leaveResponsiblePerson = leave_application.leaveResponsiblePerson,
+                leaveReason = leave_application.leaveReason,
+                calenderId = leave_application.calenderId,
+                dayOffDate =Convert.ToDateTime(leave_application.dayOffDate),
+
+            };           
+
+            var typelist = await _leavemanage.saveLeaveApplication(datasave);
            
             return Ok(new
             {
                 code = typelist.Status ? "200" : "500",
+                leaveapplyid=typelist.leaveApplicationId,
                 message = typelist.Message,               
               
             });
         }
+
+        [HttpPost("file-upload")]
+
+        public async Task<IActionResult> DyanmicFileUpload(IFormFile file, long refaranceid)
+        {
+
+            var uploadstatus = await _leavemanage.FileUploadLeaveApplication( file, refaranceid);
+
+            return Ok(new
+            {
+                code = uploadstatus.Status ? "200" : "500",
+                message = uploadstatus.Message,
+
+            });
+        }
+        
 
     }
 }

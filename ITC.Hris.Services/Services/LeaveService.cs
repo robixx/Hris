@@ -1,6 +1,7 @@
 ﻿using ITC.Hris.Application.Interface;
 using ITC.Hris.Application.ModelViewer;
 using ITC.Hris.Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -117,19 +118,20 @@ namespace ITC.Hris.Infrastructure.Services
             }
         }
 
-        public async Task<(string Message, bool Status)> saveLeaveApplication(LeaveCreateDto leave_applications, long EmployeeId)
+        public async Task<(long leaveApplicationId, string Message, bool Status)> saveLeaveApplication(app_hris_leave_applicationDto leave_application)
         {
             try
             {
                 var calenderdata = await _ihelpdb.app_hris_leave_calender.Where(a => a.isActive == true).ToListAsync();
-                if (leave_applications == null)
+                long fassLeaveApplicationId = 0;
+                if (leave_application == null)
                 {
-                    return ("Data not Valid", false);
+                    return (0,"Data not Valid", false);
                 }
                 else
                 {
-                    var leave_application = leave_applications.leave_Apply;
-                    var leave_file = leave_applications.file;
+                    //var leave_application = leave_applications.leave_Apply;
+                    //var leave_file = leave_applications.file;
                     // leavestatus 5 then here
                     #region leavestatuscheck for 5
                     if (leave_application.leaveRuleId == 5)
@@ -137,7 +139,7 @@ namespace ITC.Hris.Infrastructure.Services
                         if (leave_application.dayOffDate == null)
                         {
 
-                            return ("Please enter date day off taken for.", false);
+                            return (0,"Please enter date day off taken for.", false);
 
                         }
                     }
@@ -163,7 +165,7 @@ namespace ITC.Hris.Infrastructure.Services
                         int leaveResponsiblePersonLeaveCount = (int)leaveResponsiblePersonPrm.Value;
                         if (leaveResponsiblePersonLeaveCount > 0)
                         {
-                            return ("Leave responsible person has taken leave within this date range.", false);
+                            return (0,"Leave responsible person has taken leave within this date range.", false);
 
                         }
 
@@ -171,25 +173,7 @@ namespace ITC.Hris.Infrastructure.Services
 
                     #endregion
 
-                    #region Image Validation checker
-                    if (leave_file != null && leave_file.Length > 0)
-                    {
-                        string fileExtension = Path.GetExtension(leave_file.FileName).ToLower();
-                        string[] allowedExtensions = { ".jpg", ".png", ".doc", ".pdf", ".jpeg", ".docx" };
-
-                        if (!allowedExtensions.Contains(fileExtension))
-                        {
-                            return ("Please enter a valid file. Only allowed types: .jpg, .png, .doc, .pdf, .jpeg, .docx.", false);
-                        }
-
-                        long fileSizeInMB = leave_file.Length / (1024 * 1024);
-                        if (fileSizeInMB > 5)
-                        {
-                            return ("File size cannot be greater than 5MB.", false);
-                        }
-                    }
-
-                    #endregion
+                    
 
                     #region date time Validation
                     int leaveDays = await GetLeaveDays(leave_application.leaveRuleId);
@@ -215,13 +199,13 @@ namespace ITC.Hris.Infrastructure.Services
                     if (leavetakenCountInDateRange == -1)
                     {
 
-                        return ("Leave from date cannot be greater than leave to date.", false);
+                        return (0, "Leave from date cannot be greater than leave to date.", false);
 
                     }
                     if (leavetakenCountInDateRange > 0)
                     {
 
-                        return ("Leave has taken within this date range.", false);
+                        return (0, "Leave has taken within this date range.", false);
 
                     }
                     //for checking is leave taken between the time interval start here
@@ -229,13 +213,13 @@ namespace ITC.Hris.Infrastructure.Services
                     if (leavetakenCountInDateRangeMaster == -1)
                     {
 
-                        return ("Leave from date cannot be greater than leave to date.", false);
+                        return (0, "Leave from date cannot be greater than leave to date.", false);
 
                     }
                     if (leavetakenCountInDateRangeMaster > 0)
                     {
 
-                        return ("Leave has taken within this date range.", false);
+                        return (0, "Leave has taken within this date range.", false);
 
                     }
 
@@ -250,7 +234,7 @@ namespace ITC.Hris.Infrastructure.Services
                             if (!(leave_application.leaveFromDate >= calendarInfo.startDate && leave_application.leaveFromDate <= calendarInfo.endDate))
                             {
 
-                                return ("Leave must be taken within calendar year.", false);
+                                return (0, "Leave must be taken within calendar year.", false);
 
                             }
                         }
@@ -259,7 +243,7 @@ namespace ITC.Hris.Infrastructure.Services
                     else
                     {
 
-                        return ("Calendar year info not found.", false);
+                        return (0, "Calendar year info not found.", false);
 
                     }
                     
@@ -268,12 +252,12 @@ namespace ITC.Hris.Infrastructure.Services
                     if (leave_balance < 0)
                     {
 
-                        return ("Leave balance is not available for selected leave range.", false);
+                        return (0, "Leave balance is not available for selected leave range.", false);
 
                     }
                     //for checking leave balance end here
                     leave_application.insertDate = DateTime.Now;
-                    leave_application.insertBy = Convert.ToInt32(EmployeeId);
+                    leave_application.insertBy = Convert.ToInt32(leave_application.employeeId);
                     leave_application.staus = 1;
 
                     // for approver id
@@ -342,12 +326,13 @@ namespace ITC.Hris.Infrastructure.Services
                         new SqlParameter("@CalenderYear", int.Parse(DateTime.Now.ToString("yyyy"))),
                         new SqlParameter("@LeaveAllocated", leaveDays),
                         new SqlParameter("@LeaveTaken", leaveTaken),
-                        new SqlParameter("@dayOffDate", leave_application.dayOffDate),
+                        new SqlParameter("@dayOffDate", (object)leave_application?.dayOffDate ?? DBNull.Value),
                         LeaveApplicationIdParam
                     );
 
                     // Retrieve output parameters
                     long LeaveApplicationId1 = (long)LeaveApplicationIdParam.Value;
+                    fassLeaveApplicationId = LeaveApplicationId1;
                     //int leaveBalance = (int)leaveBalanceParam.Value;
                     //int leaveAvailed = (int)leaveAvailedParam.Value;
                     long previousApproverId = Convert.ToInt64(0);
@@ -363,44 +348,7 @@ namespace ITC.Hris.Infrastructure.Services
                         new SqlParameter("@LeaveApprovalLevel", leave_application.leaveApprovalLevel),
                         new SqlParameter("@Status", leave_application.staus)
                     );
-                    //upload attachment
-                    if (leave_file != null && leave_file.Length > 0)
-                    {
-                        try
-                        {
-                            string fileExtension = Path.GetExtension(leave_file.FileName);                          
-                            string? relativePath = _configuration["ImageStorage:LeaveAttachmentPath"];                         
-                            if (string.IsNullOrWhiteSpace(relativePath))
-                            {
-                                throw new InvalidOperationException("The configuration 'ImageStorage:LeaveAttachmentPath' is missing or not set in appsettings.json.");
-                            }
-
-                            string rootPath = Directory.GetCurrentDirectory();
-                            string folderPath = Path.Combine(rootPath, relativePath);
-                            
-                            if (!Directory.Exists(folderPath))
-                                Directory.CreateDirectory(folderPath);                           
-                            string fileName = $"{LeaveApplicationId1}{fileExtension}";
-                            
-                            string fullPath = Path.Combine(folderPath, fileName);
-                            
-                            using (var stream = new FileStream(fullPath, FileMode.Create))
-                            {
-                                await leave_file.CopyToAsync(stream);
-                            }
-                            //insert file name to DB
-                            await _ihelpdb.Database.ExecuteSqlRawAsync("EXEC usp_insert_leave_attachment @prmLeaveApplicationId, @prmAttachmentFileName",
-                                    new SqlParameter("@prmLeaveApplicationId", LeaveApplicationId1),
-                                    new SqlParameter("@prmAttachmentFileName", fileName));
-                        }
-                        catch (Exception ex)
-                        {
-                            var serviceName = nameof(LeaveService);
-                            var methodName = nameof(saveLeaveApplication);
-                            return ($"Error in Image Or Leave File Save {serviceName}: {methodName} Error:{ex.Message} ", false);
-                        }
-
-                    }
+                   
                     var statusin = 0;
                     ///Leave Notification
                     ///by robi 2024-09-15
@@ -435,7 +383,7 @@ namespace ITC.Hris.Infrastructure.Services
 
                     string displayName = "";
 
-                    string dateRange = " from  " + leave_application.leaveFromDate.ToString("dd/MM/yyyy") + " to " + leave_application.leaveToDate.ToString("dd/MM/yyyy");
+                    string dateRange = " from  " + leave_application?.leaveFromDate?.ToString("dd/MM/yyyy") + " to " + leave_application?.leaveToDate?.ToString("dd/MM/yyyy");
                     var user = await _ihelpdb.sec_users
                             .Where(u => u.employeeId == leave_application.employeeId)
                             .FirstOrDefaultAsync();
@@ -740,18 +688,19 @@ namespace ITC.Hris.Infrastructure.Services
                     await transaction.CommitAsync();
 
                     #endregion
+                  
 
                 }
 
+                return (fassLeaveApplicationId, "Leave Apply saved successfully.", true);
 
-                return ("Leave Apply saved successfully.", true);
             }
             catch (Exception ex)
             {
 
                 var serviceName = nameof(LeaveService);
                 var methodName = nameof(saveLeaveApplication);
-                return ($"Error in {serviceName}: {methodName} Error:{ex.Message} ", false);
+                return (0,$"Error in {serviceName}: {methodName} Error:{ex.Message} ", false);
             }
         }
 
@@ -822,6 +771,73 @@ namespace ITC.Hris.Infrastructure.Services
             return result.FirstOrDefault()?.LeaveDaysCount ?? 0;
         }
 
+        public async Task<(string Message, bool Status)> FileUploadLeaveApplication(IFormFile file, long refaranceid)
+        {
+            try
+            {
+                #region Image Validation checker
+                if (file != null && file.Length > 0)
+                {
+                    string fileExtension = Path.GetExtension(file.FileName).ToLower();
+                    string[] allowedExtensions = { ".jpg", ".png", ".doc", ".pdf", ".jpeg", ".docx" };
+
+                    if (!allowedExtensions.Contains(fileExtension))
+                    {
+                        return ("Please enter a valid file. Only allowed types: .jpg, .png, .doc, .pdf, .jpeg, .docx.", false);
+                    }
+
+                    long fileSizeInMB = file.Length / (1024 * 1024);
+                    if (fileSizeInMB > 5)
+                    {
+                        return ("File size cannot be greater than 5MB.", false);
+                    }
+                }
+
+                #endregion
+
+                //upload attachment
+                if (file != null && file.Length > 0)
+                {
+                    
+                        string fileExtension = Path.GetExtension(file.FileName);
+                        string? relativePath = _configuration["ImageStorage:LeaveAttachmentPath"];
+                        if (string.IsNullOrWhiteSpace(relativePath))
+                        {
+                            throw new InvalidOperationException("The configuration 'ImageStorage:LeaveAttachmentPath' is missing or not set in appsettings.json.");
+                        }
+
+                        string rootPath = Directory.GetCurrentDirectory();
+                        string folderPath = Path.Combine(rootPath, relativePath);
+
+                        if (!Directory.Exists(folderPath))
+                            Directory.CreateDirectory(folderPath);
+                        string fileName = $"{refaranceid}{fileExtension}";
+
+                        string fullPath = Path.Combine(folderPath, fileName);
+
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(stream);
+                        }
+                        //insert file name to DB
+                        await _ihelpdb.Database.ExecuteSqlRawAsync("EXEC usp_insert_leave_attachment @prmLeaveApplicationId, @prmAttachmentFileName",
+                                new SqlParameter("@prmLeaveApplicationId", refaranceid),
+                                new SqlParameter("@prmAttachmentFileName", fileName));
+                   
+
+                }
+
+                return ("File Upload Successfully", true);
+
+
+            }
+            catch (Exception ex)
+            {
+                var serviceName = nameof(LeaveService);
+                var methodName = nameof(FileUploadLeaveApplication);
+                return ($"Error in {serviceName}: {methodName} Error:{ex.Message} ", false);
+            }
+        }
 
         public class LeaveTakenResult
         {
