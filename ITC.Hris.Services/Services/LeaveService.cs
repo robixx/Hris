@@ -32,7 +32,7 @@ namespace ITC.Hris.Infrastructure.Services
                     .Where(i => i.isActive == true)
                     .Select(r => new CalendarYearDto
                     {
-                        CalendarYearId = r.calenderName,
+                        CalendarYearId = r.calenderId,
                         CalendarYearName = r.calenderName,
                     }).AsNoTracking().FirstOrDefaultAsync();
 

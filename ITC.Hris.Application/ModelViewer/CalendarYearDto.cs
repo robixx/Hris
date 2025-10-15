@@ -8,7 +8,7 @@ namespace ITC.Hris.Application.ModelViewer
 {
     public class CalendarYearDto
     {
-        public string CalendarYearId { get; set; }
+        public int CalendarYearId { get; set; }
         public string CalendarYearName { get; set; }
     
     }
